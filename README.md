@@ -5,14 +5,18 @@ The http server automatically restarts when files are updated in the bin directo
 
 ## Getting Started
 
-Download the 'sswc.exe' file ...
+Download the 'sswc.zip' file and unzip it to your directory of choice ...
 
 ```
-wget -O sswc.exe https://github.com/SuperSimpleWeb/Ssw.Cli/dist/sswc.exe?raw=true
+curl -L -o sswc.zip https://github.com/SuperSimpleWeb/Ssw.Cli/raw/master/dist/sswc.zip
 ```
 
-Run it from a command prompt
+Run the cli app from a command prompt
 
 ```
 sswc.exe /help
 ```
+
+## Examples
+
+Coming soon ...
