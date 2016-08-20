@@ -1,4 +1,4 @@
-# Ssw.Cli
+# sswc
 
 A command line interface to run an http server for development or as a windows service, that restart when files are updated in the bin directory.
 
