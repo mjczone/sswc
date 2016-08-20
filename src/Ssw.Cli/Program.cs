@@ -85,6 +85,11 @@ namespace Ssw.Cli
                     throw new ArgumentException(nameof(args));
                 }
             }
+            catch (ArgumentException)
+            {
+                Console.WriteLine(ConsoleArgs.HelpFor<ProgramArgs>(false));
+                return false;
+            }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
