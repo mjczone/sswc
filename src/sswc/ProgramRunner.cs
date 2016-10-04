@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -12,6 +14,8 @@ namespace Ssw.Cli
         private AppDomain _appHostDomain;
         private FileSystemWatcher _watcher;
         private ServerHostProxy _proxy;
+        private Timer _timer;
+        private string _binDirectoryPath = null;
 
         public ProgramRunner Start(ProgramArgs args)
         {
@@ -21,6 +25,7 @@ namespace Ssw.Cli
             _args = args;
 
             var binDir = new DirectoryInfo(args.BinDirectory);
+            _binDirectoryPath = binDir.FullName;
             _appHostDomain = AppDomain.CreateDomain("ServerHostDomain", null, binDir.FullName, null, true);
             _proxy = (ServerHostProxy)_appHostDomain.CreateInstanceFromAndUnwrap(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath, typeof(ServerHostProxy).FullName);
 
@@ -37,20 +42,28 @@ namespace Ssw.Cli
                     Console.WriteLine("Server listening at http://localhost:" + _args.Port);
                 }
 
-                _watcher = new FileSystemWatcher(binDir.FullName)
+                if (_args.Poll <= 0)
                 {
-                    Filter = "*.*",
-                    IncludeSubdirectories = false
-                };
-                _watcher.Changed += Watcher_Changed;
-                _watcher.Created += Watcher_Changed;
-                _watcher.Deleted += Watcher_Changed;
-                _watcher.Renamed += Watcher_Changed;
-                // start the watcher
-                _watcher.EnableRaisingEvents = true;
+                    _watcher = new FileSystemWatcher(_binDirectoryPath)
+                    {
+                        Filter = "*.*",
+                        IncludeSubdirectories = false
+                    };
+                    _watcher.Changed += Watcher_Changed;
+                    _watcher.Created += Watcher_Changed;
+                    _watcher.Deleted += Watcher_Changed;
+                    _watcher.Renamed += Watcher_Changed;
+                    // start the watcher
+                    _watcher.EnableRaisingEvents = true;
+                }
+                else
+                {
+                    _timerPaused = false;
+                    if (_timer == null) _timer = new Timer(Timer_Fired, null, _args.Poll, _args.Poll);
+                }
 
                 Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.WriteLine("Watching directory: " + binDir.FullName);
+                Console.WriteLine("Watching directory: " + binDir.FullName + (_timer != null ? " (polling every " + _args.Poll + " ms)": ""));
                 Console.ResetColor();
             }
             catch (Exception ex)
@@ -87,7 +100,23 @@ namespace Ssw.Cli
 
             if (!Console.IsInputRedirected)
             {
+                _timer?.Dispose();
                 Environment.Exit(0);
+            }
+        }
+
+        private void Restart()
+        {
+            if (_appHostDomain != null)
+            {
+                AppDomain.Unload(_appHostDomain);
+                _appHostDomain = null;
+                Thread.Sleep(2000);
+                Start(_args);
+            }
+            else
+            {
+                Stop();
             }
         }
 
@@ -106,18 +135,32 @@ namespace Ssw.Cli
             Console.WriteLine(e.ChangeType + " detected to " + e.Name + " (" + e.FullPath + ")");
             Console.ResetColor();
 
-            if (_appHostDomain != null)
-            {
-                AppDomain.Unload(_appHostDomain);
-                _appHostDomain = null;
-                Thread.Sleep(2000);
-                Start(_args);
-            }
-            else
-            {
-                Stop();
-            }
+            Restart();
         }
+
+        private void Timer_Fired(object state)
+        {
+            Console.WriteLine("Timer_Fired: " + _timerPaused);
+
+            if (_timerPaused) return;
+
+            _timerPaused = true;
+
+            Console.WriteLine("Checking dir " + _binDirectoryPath + " for changes");
+            var changesDetected = DirectoryHasChanged(_binDirectoryPath);
+            if (changesDetected)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.WriteLine("Changes detected in " + _binDirectoryPath);
+                Console.ResetColor();
+
+                Restart();
+            }
+
+            _timerPaused = false;
+        }
+
+        private bool _timerPaused = false;
 
         #region Private Methods
 
@@ -190,6 +233,41 @@ namespace Ssw.Cli
         //    return dirName == null ? null : Path.Combine(dirName, configFileName);
         //}
 
+        #endregion
+
+        #region FileCompare
+
+        private DateTime? _lastAccessTime = null;
+        private string _directoryHash = null;
+        private bool DirectoryHasChanged(string directory)
+        {
+            var dir = new DirectoryInfo(directory);
+            var lastAccessTime = dir.LastAccessTime;
+            var directoryHasChanged = false;
+
+            var rebuildingDirHash = _directoryHash == null ||
+                                    _lastAccessTime.GetValueOrDefault(DateTime.MinValue) != lastAccessTime;
+
+            if (rebuildingDirHash)
+            {
+                var sb = new StringBuilder();
+                foreach (var fi in dir.GetFiles("*.*", SearchOption.AllDirectories))
+                {
+                    if (!Regex.IsMatch(fi.FullName, _args.Watch))
+                        continue;
+                    sb.Append("0;" + 
+                        string.Format("{0}{1}{2}{3}", fi.Name, fi.Length, fi.CreationTime, fi.LastWriteTime)
+                            .GetHashCode());
+                }
+                var directoryHash = sb.ToString();
+                directoryHasChanged = _directoryHash != null && _directoryHash != directoryHash;
+
+                _lastAccessTime = lastAccessTime;
+                _directoryHash = directoryHash;
+            }
+
+            return directoryHasChanged;
+        }
         #endregion
     }
 }

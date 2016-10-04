@@ -1,3 +1,3 @@
-call ..\src\Ssw.Cli\bin\debug\sswc.exe .\demo\bin\Debug\DemoApi.dll /uninstall /serviceName="DemoApi 1"
-call ..\src\Ssw.Cli\bin\debug\sswc.exe .\demo\bin\Debug\DemoApi.dll /uninstall /serviceName="DemoApi 2"
-call ..\src\Ssw.Cli\bin\debug\sswc.exe .\demo\bin\Debug\DemoApi.dll /uninstall /serviceName="DemoApi 3"
+call ..\src\sswc\bin\debug\sswc.exe .\demo\bin\Debug\DemoApi.dll /uninstall /serviceName="DemoApi_1"
+call ..\src\sswc\bin\debug\sswc.exe .\demo\bin\Debug\DemoApi.dll /uninstall /serviceName="DemoApi_2"
+call ..\src\sswc\bin\debug\sswc.exe .\demo\bin\Debug\DemoApi.dll /uninstall /serviceName="DemoApi_3"

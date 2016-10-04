@@ -54,7 +54,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceControllerUtilsTests.cs" />
     <Compile Include="TestFixtureBase.cs" />
-    <Compile Include="UnitTest1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -64,13 +63,13 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Ssw.Cli\Ssw.Cli.csproj">
-      <Project>{f4a83bda-18c4-4ef8-b777-5adb3a298991}</Project>
-      <Name>Ssw.Cli</Name>
-    </ProjectReference>
+    <Folder Include="AppHostTests\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="AppHostTests\" />
+    <ProjectReference Include="..\sswc\sswc.csproj">
+      <Project>{f4a83bda-18c4-4ef8-b777-5adb3a298991}</Project>
+      <Name>sswc</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

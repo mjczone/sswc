@@ -33,8 +33,7 @@ NOTE: In the following examples, the 'sswc.exe' executable
     {
         private const string DefaultPort = "2020";
         private const string DefaultWatchPattern = @"\.*";
-
-        internal const string DefaultServiceName = @"SuperSimpleWeb";
+        internal const string DefaultServiceName = @"SSW";
 
         public ProgramArgs()
         {
@@ -59,6 +58,9 @@ NOTE: In the following examples, the 'sswc.exe' executable
 
         [Display(Name = "watch", Description = "Regex watch pattern for recycling the dev server and detecting changes in the bin directory.", Order = 13), DefaultValue(typeof(string), DefaultWatchPattern)]
         public string Watch { get; set; }
+
+        [Display(Name = "poll", Description = "Use polling (in milliseconds) instead of relying on file system events. Use this when you are having issues with code on a network drive or a file share.", Order = 14), DefaultValue(typeof(int), "0")]
+        public int Poll { get; set; }
 
         [Display(Name = "install", Description = "Install windows service.", Order = 30)]
         public bool Install { get; set; }
