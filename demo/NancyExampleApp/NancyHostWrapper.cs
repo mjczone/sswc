@@ -5,7 +5,7 @@ using Nancy.Hosting.Self;
 namespace NancyExampleApp
 {
     /// <summary>
-    /// Run Nancy with sswc using:
+    /// Run Nancy example with sswc using:
     /// 
     /// sswc .\NancyExampleApp\bin\Debug\NancyExampleApp.dll /type=NancyExampleApp.NancyHostWrapper /port=2025
     /// </summary>

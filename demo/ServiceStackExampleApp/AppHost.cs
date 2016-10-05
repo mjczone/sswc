@@ -9,6 +9,11 @@ using ServiceStack.Text;
 
 namespace ServiceStackExampleApp
 {
+    /// <summary>
+    /// Run ServiceStack example with sswc using:
+    /// 
+    /// sswc .\ServiceStackExampleApp\bin\Debug\ServiceStackExampleApp.dll /port=2027
+    /// </summary>
     public class AppHost: AppSelfHostBase
     {
         public AppHost() : base("ServiceStack API", typeof(AppHost).Assembly)

@@ -13,7 +13,7 @@ using Owin;
 namespace WebApiExampleApp
 {
     /// <summary>
-    /// Run Nancy with sswc using:
+    /// Run WebApi example with sswc using:
     /// 
     /// sswc .\WebApiExampleApp\bin\Debug\WebApiExampleApp.dll /type=WebApiExampleApp.WebApiHostWrapper /port=2026
     /// </summary>
