@@ -120,11 +120,8 @@ namespace Ssw.Cli.Tests
     }
     public class Program
     {
-        private string[] args;
-
         public Program(string[] args)
         {
-            this.args = args;
         }
 
         public static void Main(string[] args)
