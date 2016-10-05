@@ -18,6 +18,8 @@ Download the 'sswc.zip' file and unzip it to your directory of choice ...
 
 ```
 curl -L -o sswc.zip https://github.com/mjczone/sswc/raw/master/dist/sswc.zip
+curl -L -o 7za.exe https://github.com/mjczone/sswc/raw/master/lib/7za.exe
+7za.exe x sswc.zip
 ```
 
 Run the cli app from a command prompt
@@ -62,7 +64,7 @@ sswc .\MyProject\bin\Debug\MyProject.dll /type=MyProject.MyHost /watch=\*.dll
 
 You can use 'sswc' to install your Host class library as a Windows Service.
 
-To install the windows service, use:
+To install as a windows service, use:
 
 ```
 sswc .\MyProject\bin\Debug\MyProject.dll /type=MyProject.MyHost /port=8081 /install /serviceName="MyProject_Host" /serviceDisplayName="MyProject Host" /serviceDescription="API for MyProject served on port 8081"
@@ -76,86 +78,25 @@ sswc /uninstall /serviceName="MyProject_Host"
 
 ## Examples
 
+Clone the repository, then view the examples below. There is also a "Demo" app you can look at in the demo\demo directory.
+
 ### Sample using Nancy
 
-The following example would respond to the following command:
+Run the sample: [run-nancy-example.bat](https://github.com/mjczone/sswc/blob/master/demo/run-nancy-example.bat)
 
-```
-sswc NancyHostAssembly.dll /type=NancyHostAssembly.NancyHostWrapper
-```
+[View the source](https://github.com/mjczone/sswc/blob/master/demo/NancyExampleApp/NancyHostWrapper.cs)
 
-Nancy class:
+### Sample using WebApi
 
-```
-namespace NancyHostAssembly 
-{
-    public class NancyHostWrapper
-    {
-        private NancyHost _host = null;
+Run the sample: [run-webapi-example.bat](https://github.com/mjczone/sswc/blob/master/demo/run-webapi-example.bat)
 
-        public void Init()
-        {
-            // optional call that is fired before the Start method
-        }
-
-        // 'urlBase' will look like this: 'http://*:2020', or whatever port you're using
-        public void Start(string urlBase)
-        {
-             _host = new NancyHost(new Uri(urlBase.Replace("*", "localhost")));
-             _host.Start();
-             Console.WriteLine("Running on " + urlBase);
-             Console.ReadLine();
-        }
-
-        public void Stop()
-        {
-            if(_host != null) {
-                _host.Stop();
-                _host.Dispose();
-            }
-        }
-    }
-}
-```
+[View the source](https://github.com/mjczone/sswc/blob/master/demo/WebApiExampleApp/WebApiHostWrapper.cs)
 
 ### Sample using ServiceStack
 
-The following example would respond to the following command:
+Run the sample: [run-servicestack-example.bat](https://github.com/mjczone/sswc/blob/master/demo/run-servicestack-example.bat)
 
-```
-sswc ServiceStackHostAssembly.dll /type=ServiceStackHostAssembly.MyServiceStackHost
-```
-
-ServiceStack class:
-
-```
-namespace ServiceStackHostAssembly 
-{
-    public class MyServiceStackHost: AppSelfHostBase
-    {
-        public AppHost(): base("Sample API", typeof(MyServiceStackHost).Assembly) { }
-        
-        public override ServiceStackHost Init() // optional
-        {
-            return base.Init();
-        }
-
-        public override ServiceStackHost Start(string urlBase) // optional
-        {
-            return base.Start(urlBase);
-        }
-
-        public override void Stop() // optional
-        {
-            base.Stop();
-        }
-
-        public override void Configure(Container container)
-        {
-        }
-    }
-}
-```
+[View the source](https://github.com/mjczone/sswc/blob/master/demo/ServiceStackExampleApp/AppHost.cs)
 
 ## Issues/questions
 
