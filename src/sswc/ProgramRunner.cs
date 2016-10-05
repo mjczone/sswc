@@ -20,7 +20,9 @@ namespace Ssw.Cli
         public ProgramRunner Start(ProgramArgs args)
         {
             if (!NormalizeArgs(args))
+            {
                 return null;
+            }
 
             _args = args;
 

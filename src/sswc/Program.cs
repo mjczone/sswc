@@ -110,7 +110,7 @@ namespace Ssw.Cli
                 pArgs.AppHostType = string.IsNullOrWhiteSpace(pArgs.AppHostType) ? null : pArgs.AppHostType.Trim(' ', '\"', '\'');
                 pArgs.BinDirectory = string.IsNullOrWhiteSpace(pArgs.BinDirectory) ? null : pArgs.BinDirectory.Trim(' ', '\"', '\'');
 
-                if (!string.IsNullOrEmpty(pArgs.AppHostAssembly))
+                if (!string.IsNullOrEmpty(pArgs.AppHostAssembly) && string.IsNullOrEmpty(pArgs.BinDirectory))
                     pArgs.AppHostAssembly = new FileInfo(pArgs.AppHostAssembly).FullName;
 
                 if (!string.IsNullOrEmpty(pArgs.BinDirectory))
