@@ -18,8 +18,6 @@ Download the 'sswc.zip' file and unzip it to your directory of choice ...
 
 ```
 curl -L -o sswc.zip https://github.com/mjczone/sswc/raw/master/dist/sswc.zip
-curl -L -o 7za.exe https://github.com/mjczone/sswc/raw/master/lib/7za.exe
-7za.exe x sswc.zip
 ```
 
 Run the cli app from a command prompt
